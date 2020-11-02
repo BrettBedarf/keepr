@@ -1,54 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function CreateArea(props) {
-	const [inputText, setInput] = useState({});
+  const [note, setNote] = useState({
+    title: "",
+    content: ""
+  });
 
-	function handleChange(event) {
-		const { name, value } = event.target;
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-		setInput({
-			...inputText,
-			[name]: value,
-		});
-	}
+    setNote(prevNote => {
+      return {
+        ...prevNote,
+        [name]: value
+      };
+    });
+  }
 
-	function submitNote(e) {
-		props.addNote(inputText);
-		//set all current properties to empty strings
-		const inputToClear = { ...inputText };
-		Object.keys(inputToClear).forEach(key => (inputToClear[key] = ''));
-		setInput(inputToClear);
-		e.preventDefault();
-	}
+  function submitNote(event) {
+    props.onAdd(note);
+    setNote({
+      title: "",
+      content: ""
+    });
+    event.preventDefault();
+  }
 
-	return (
-		<div>
-			<form onSubmit={submitNote}>
-				<input
-					name='title'
-					placeholder='Title'
-					onChange={handleChange}
-					value={
-						typeof inputText.title !== 'undefined'
-							? inputText.title
-							: ''
-					}
-				/>
-				<textarea
-					name='content'
-					placeholder='Take a note...'
-					rows='3'
-					onChange={handleChange}
-					value={
-						inputText.content !== 'undefined'
-							? inputText.content
-							: ''
-					}
-				/>
-				<button type='submit'>Add</button>
-			</form>
-		</div>
-	);
+  return (
+    <div>
+      <form className="create-note">
+        <input
+          name="title"
+          onChange={handleChange}
+          value={note.title}
+          placeholder="Title"
+        />
+        <textarea
+          name="content"
+          onChange={handleChange}
+          value={note.content}
+          placeholder="Take a note..."
+          rows="3"
+        />
+        <button onClick={submitNote}>Add</button>
+      </form>
+    </div>
+  );
 }
 
 export default CreateArea;
